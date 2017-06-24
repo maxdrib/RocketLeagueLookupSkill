@@ -116,8 +116,8 @@ def build_speechlet_response(title, output, reprompt_text, should_end_session):
         },
         'card': {
             'type': 'Simple',
-            'title': "SessionSpeechlet - " + title,
-            'content': "SessionSpeechlet - " + output
+            'title': title,
+            'content': output
         },
         'reprompt': {
             'outputSpeech': {
@@ -128,7 +128,7 @@ def build_speechlet_response(title, output, reprompt_text, should_end_session):
         'shouldEndSession': should_end_session
     }
 
-def buildSpeechletResponseWithDirectiveNoIntent():
+def buildSpeechletResponseWithDirectiveNoIntent(intent):
     print("BUILDING SPEECHLET RESPONSE WITH NO INTENT")
     return {
       "outputSpeech" : None,
@@ -151,7 +151,7 @@ def build_response(session_attributes, speechlet_response):
 
 # --------------- Functions that control the skill's behavior ------------------
 
-def get_welcome_response():
+def get_welcome_response(session):
     """ If we wanted to initialize the session to have some attributes we could
     add those here
     """
@@ -162,7 +162,22 @@ def get_welcome_response():
                     "Please add a player or lookup a player."
     # If the user either does not reply to the welcome message or says something
     # that is not understood, they will be prompted again with this text.
-    reprompt_text = "Please add, lookup, or remove a player." 
+    reprompt_text = "I'm sorry, I didn't catch that. Please add, lookup, or remove a player." 
+
+    alexa_user_id = session['user']['userId']
+    dynamodb = boto3.resource('dynamodb')
+    table = dynamodb.Table(TABLE_NAME)
+    dbLookupResult = table.get_item(
+            Key={'AlexaUserID' : alexa_user_id}
+        )
+
+    # Check to see if Alexa user has been created in DB
+    if 'Item' not in [item for item in dbLookupResult]:
+        speech_output = "Welcome to the Rocket League lookup app. There are " \
+            "not currently any players. Please add a player with the phrase, 'add player'," \
+            " followed by your first name"
+        reprompt_text = "Sorry, I didn't catch that. Please add a new player."
+
     should_end_session = False
     return build_response(session_attributes, build_speechlet_response(
         card_title, speech_output, reprompt_text, should_end_session))
@@ -186,7 +201,7 @@ def create_player_id_attributes(player_id):
 
 def parse_api_call(player_id, json_result):
     """ Helper function to parse the resulting API call for a basic player lookup """
-    print("Results for player " + player_id + " are:")
+    print("Results for player " + player_id + " are:"+'\n'+json_result)
     # Check to see if player exists in database
     if 'code' in [keys for keys in json_result]:
         if json_result['code'] == 404:
@@ -277,22 +292,25 @@ def database_api_lookup(player_id, alexa_user_id):
     print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     print(apiLookupResult)
     if apiLookupResult == '':
-        speech_output = 'Nothing returned from Rocket League API for player <say-as interpret-as="spell-out">'+unique_id+'</say-as>'
+        speech_output = 'Nothing returned from Rocket League API for player <say-as interpret-as="spell-out">'+unique_id+'</say-as>. Please try again later.'
         return speech_output
 
     json_result = json.loads(apiLookupResult)
     return json_result
 
 
-def lookup_player(intent, session):
+def lookup_player(intent, session, intent_request):
     """ Looks up a player's screenname in the database, then makes Rocket League API call to get data
     """
 
-    card_title = intent['name']
+    card_title = "Lookup Player"
     session_attributes = {}
     should_end_session = False
 
     if 'name' in intent['slots']:
+        # Check to see if all slots are populated 
+        if intent_request[u'dialogState'] != "COMPLETED" or 'value' not in intent['slots']['name']:
+            return build_response(session_attributes, buildSpeechletResponseWithDirectiveNoIntent(intent))
         player_id = intent['slots']['name']['value'].lower()
         unique_id = ""
         platform_id = ""
@@ -302,32 +320,38 @@ def lookup_player(intent, session):
         api_lookup_result = database_api_lookup(player_id, alexa_user_id)
 
         # if function returns a string, that means there was an error, so build response. Otherwise proceed as before
-        if type(api_lookup_result) == type("hi"):
+        if type(api_lookup_result) == type("hi") or type(api_lookup_result)==type(u'hi'):
+            should_end_session = True
             return build_response(session_attributes, build_speechlet_response(
-                card_title, api_lookup_result, "Please try with another player", should_end_session))
+                card_title, api_lookup_result, "", should_end_session))
 
         # otherwise, parse it and generate a speech output
         speech_output = parse_api_call(player_id, api_lookup_result)
+        should_end_session = True
         
     else:
         speech_output = "I'm not sure what your user name is. " \
                         "Please contact your administrator."
+        should_end_session = True
     return build_response(session_attributes, build_speechlet_response(
         card_title, speech_output, "", should_end_session))
 
 
 def successfully_removed_player(player_id, session_attributes, card_title, should_end_session):
     """ Helper function to generate response on successful removal """
-    speech_output = "Successfully removed player " + player_id
-    reprompt_text = "Would you like to do anything else"
+    speech_output = "Successfully removed player " + player_id + ". What else would you like to do?"
+    reprompt_text = "I'm sorry, I didn't catch that. Please try again."
     return build_response(session_attributes, build_speechlet_response(
         card_title, speech_output, reprompt_text, should_end_session))
 
-def remove_player(intent, session):
+def remove_player(intent, session, intent_request):
     """ Removes a player from the database"""
     session_attributes = {}
-    card_title = intent['name']
+    card_title = "Remove Player"
     should_end_session = False
+
+    if intent_request[u'dialogState'] != "COMPLETED" or 'value' not in intent['slots']['name']:
+            return build_response(session_attributes, buildSpeechletResponseWithDirectiveNoIntent(intent))
 
     # Extract variables from request
     player_id = intent['slots']['name']['value'].lower()
@@ -354,15 +378,15 @@ def remove_player(intent, session):
 
 
 def successfully_added_player(player_id, session_attributes, card_title, should_end_session):
-    speech_output = "Successfully created player for " + player_id
-    reprompt_text = speech_output
+    speech_output = "Successfully created player for " + player_id + '. What else would you like to do?'
+    reprompt_text = "Sorry, I didn't catch that. What else would you like to do?"
     return build_response(session_attributes, build_speechlet_response(
         card_title, speech_output, reprompt_text, should_end_session))
 
 # Create new player in database
 def add_player(intent, session, intent_request):
     # Initialize variables
-    card_title = intent['name']
+    card_title = "Add Player"
     session_attributes = {}
     slots = intent['slots']
     should_end_session = False
@@ -374,12 +398,12 @@ def add_player(intent, session, intent_request):
 
     # Check to see if all slots are populated 
     if intent_request[u'dialogState'] != "COMPLETED":
-        return build_response(session_attributes, buildSpeechletResponseWithDirectiveNoIntent())
+        return build_response(session_attributes, buildSpeechletResponseWithDirectiveNoIntent(intent))
     # Check to see if intent is confirmed. If not dialogState is COMPLETED but not confirmed,
     #   user must have detected an error
     elif intent['confirmationStatus'] != "CONFIRMED":
         return build_response(session_attributes, build_speechlet_response(
-            card_title, "I'm sorry. Please try again", "Please try again.", should_end_session))
+            card_title, "I'm sorry, your request could not be confirmed. Please try again", "Please try again by saying, 'add player'.", should_end_session))
 
     # Since all slots are valid, we can save variables
     player_id = slots['name']['value'].lower()
@@ -388,7 +412,7 @@ def add_player(intent, session, intent_request):
     # Map input slots to platform id's
     if platform == 'steam' or platform == 'pc':
         platform_id = '1'
-    elif '4' in platform:   # ps4
+    elif '4' in platform or 'station' in platform:   # ps4
         platform_id = '2'
     elif platform == 'xbox':
         platform_id = '3'
@@ -472,7 +496,8 @@ def add_player(intent, session, intent_request):
 
 
 
-    speech_output = "Name saved as " + player_id
+    speech_output = "Name saved as " + player_id + ". What else would you like to do?"
+    reprompt_text = "Sorry, i didn't catch that. What else would you like to do?"
 
     return build_response(session_attributes, build_speechlet_response(
             card_title, speech_output, reprompt_text, should_end_session))
@@ -480,7 +505,7 @@ def add_player(intent, session, intent_request):
 
 def stat_lookup(intent, session, intent_request):
     # Initialize variables
-    card_title = intent['name']
+    card_title = "General Stat Lookup"
     session_attributes = {}
     should_end_session = False
     slots = intent['slots']
@@ -488,7 +513,7 @@ def stat_lookup(intent, session, intent_request):
     # Check if dialog state is completed. "and not" is necessary because sometimes Alexa will mark dialog as "STARTED"
     #   even if all slots are filled, so the extra check is performed
     if intent_request[u'dialogState'] != "COMPLETED" and not ('value' in slots['name'] and 'value' in slots['statType']):
-        return build_response(session_attributes, buildSpeechletResponseWithDirectiveNoIntent())
+        return build_response(session_attributes, buildSpeechletResponseWithDirectiveNoIntent(intent))
     
     # Once slots are populated, save them
     player_id = intent['slots']['name']['value'].lower()
@@ -520,13 +545,14 @@ def stat_lookup(intent, session, intent_request):
     else:
         desired_stat = "not found"
 
-    speech_response = player_id+"'s " + stat_slot+" is " + desired_stat
+    speech_response = player_id+"'s " + stat_slot+" is " + desired_stat+". What else would you like to do?"
+    reprompt_text = "sorry, I didn't catch that. What else would you like to do?"
     return build_response(session_attributes, build_speechlet_response(
             card_title, speech_response, "", should_end_session))
 
 def points_remaining(intent, session, intent_request):
     # initialize variables
-    card_title = intent['name']
+    card_title = "Points/Games Remaining"
     session_attributes = {}
     should_end_session = False
     speech_output = ""
@@ -540,7 +566,7 @@ def points_remaining(intent, session, intent_request):
     # Check to make sure dialog is complete. the "and not" is necessary because lately
     #   I've had a problem where a user specifies all the information but dialogState is not marked "COMPLETED"
     if intent_request[u'dialogState'] != "COMPLETED" and not ('value' in slots['name'] and 'value' in slots['unit'] and 'value' in slots['playlist']):
-        return build_response(session_attributes, buildSpeechletResponseWithDirectiveNoIntent())
+        return build_response(session_attributes, buildSpeechletResponseWithDirectiveNoIntent(intent))
     
     # Pull the values from the populated slots
     player_id = intent['slots']['name']['value'].lower()
@@ -649,27 +675,28 @@ def on_launch(launch_request, session):
     print("on_launch requestId=" + launch_request['requestId'] +
           ", sessionId=" + session['sessionId'])
     # Dispatch to your skill's launch
-    return get_welcome_response()
+    return get_welcome_response(session)
 
 
 def on_intent(intent_request, session):
     """ Called when the user specifies an intent for this skill """
 
-    print("on_intent requestId=" + intent_request['requestId'] +
-          ", sessionId=" + session['sessionId'])
+    #print("on_intent requestId=" + intent_request['requestId'] +
+      #    ", sessionId=" + session['sessionId'])
 
     intent = intent_request['intent']
-    intent_name = intent_request['intent']['name']
-    print (intent_name)
+    if 'name' in intent_request['intent']:
+        intent_name = intent_request['intent']['name']
+        print("Intent: " + intent_name)
 
     # Dispatch to your skill's intent handlers
     if intent_name == "LookupPlayerIntent":
-        return lookup_player(intent, session)
-    elif intent_name == "AddPlayerIntent":
+        return lookup_player(intent, session, intent_request)
+    elif intent_name == "AddPlayerIntent" or intent_name == "AddPlayer":
         return add_player(intent, session, intent_request)
     elif intent_name == "RemovePlayerIntent":
-        return remove_player(intent, session)
-    elif intent_name == "StatLookupIntent":
+        return remove_player(intent, session, intent_request)
+    elif intent_name == "AAStatLookupIntent":
         return stat_lookup(intent, session, intent_request)
     elif intent_name == "PointsRemainingIntent":
         return points_remaining(intent, session, intent_request)
@@ -710,7 +737,8 @@ def lambda_handler(event, context):
     #     raise ValueError("Invalid Application ID")
 
     print("LAMBDA RECEIVED:")
-    print(event)
+    
+    print (event)
 
     if event['session']['new']:
         on_session_started({'requestId': event['request']['requestId']},
