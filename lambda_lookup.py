@@ -1,9 +1,8 @@
 """
-This sample demonstrates a simple skill built with the Amazon Alexa Skills Kit.
-The Intent Schema, Custom Slots, and Sample Utterances for this skill, as well
-as testing instructions are located at http://amzn.to/1LzFrj6
+This skill allows users to look up their individual stats in the game Rocket League,
+by Psyonix.
 
-For additional samples, visit the Alexa Skills Kit Getting Started guide at
+For simpler skill samples, visit the Alexa Skills Kit Getting Started guide at
 http://amzn.to/1LGWsLG
 """
 
@@ -19,7 +18,7 @@ from bs4 import BeautifulSoup
 
 TABLE_NAME = 'RocketLeagueUserMapping'
 region = 'us-east-1'
-# Mapping for spelling out character names
+# Mapping for spelling out character names. These translate what a user might say to basic chars
 letter_lookup = {'1' : '1',
                  '2' : '2',
                  '3' : '3',
@@ -128,6 +127,8 @@ def build_speechlet_response(title, output, reprompt_text, should_end_session):
         'shouldEndSession': should_end_session
     }
 
+# This function is used when more information is required to fulfill an intent.
+# It returns the JSON object below, which instructs the Alexa to continue obtaining info
 def buildSpeechletResponseWithDirectiveNoIntent(intent):
     print("BUILDING SPEECHLET RESPONSE WITH NO INTENT")
     return {
@@ -140,7 +141,7 @@ def buildSpeechletResponseWithDirectiveNoIntent(intent):
       "shouldEndSession" : False
     }
 
-
+# This is the generic response that indicates an Intent was complete, and how to proceed
 def build_response(session_attributes, speechlet_response):
     return {
         'version': '1.0',
@@ -200,7 +201,7 @@ def handle_session_end_request():
 def player_not_found(player_id, session_attributes, card_title, should_end_session):
     """ Helper function to generate an Alexa response when the player was not found """
     return build_response(session_attributes, build_speechlet_response(
-                    card_title, "Player "+player_id+" not found in skill lookup. Please add the player to my database with the phrase 'add player'", 
+                    card_title, "Player "+player_id+" was not found in skill lookup. Please try with another player.", 
                     "Please try with another player", should_end_session))
 
 def create_player_id_attributes(player_id):
@@ -317,7 +318,8 @@ def database_api_lookup(player_id, alexa_user_id):
 
 
 def lookup_player(intent, session, intent_request):
-    """ Looks up a player's screenname in the database, then makes Rocket League API call to get data
+    """ Looks up a player's screenname in the database, then makes Rocket League API call to get data.
+    Returns all the available points for a player in all playlists.
     """
 
     card_title = "Lookup Player"
@@ -370,7 +372,7 @@ def remove_player(intent, session, intent_request):
     should_end_session = False
 
     if intent_request[u'dialogState'] != "COMPLETED" or 'value' not in intent['slots']['name']:
-            return build_response(session_attributes, buildSpeechletResponseWithDirectiveNoIntent(intent))
+        return build_response(session_attributes, buildSpeechletResponseWithDirectiveNoIntent(intent))
 
     # Extract variables from request
     player_id = intent['slots']['name']['value'].lower()
@@ -381,6 +383,21 @@ def remove_player(intent, session, intent_request):
     alexa_user_id = session['user']['userId']
     
     table = dynamodb.Table(TABLE_NAME)
+
+    dbLookupResult = table.get_item(
+            Key={'AlexaUserID' : alexa_user_id}
+        )
+
+    # Check to see if Alexa user has been created in DB
+    if 'Item' not in [item for item in dbLookupResult]:
+        return player_not_found(player_id, session_attributes, card_title, should_end_session)
+
+    AccountNames = dbLookupResult['Item']['AccountNames']
+
+    # Check to see if local user exists
+    if player_id not in [name for name in AccountNames]:
+        return player_not_found(player_id, session_attributes, card_title, should_end_session)
+
 
     # Update player's database item to remove the necessary player
     try:
