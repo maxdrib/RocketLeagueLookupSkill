@@ -165,8 +165,7 @@ def get_welcome_response(intent, session):
     reprompt_text = "I'm sorry, I didn't catch that. Please add, lookup, or remove a player." 
 
     alexa_user_id = session['user']['userId']
-    if u'amzn1.ask.account.AHUSQ3E3GEJHUG2IQJBC6ZQR6GRS2237B56K4QKCV46A4V2ZEKS7IQ47KE24MXBFPS666BFVJP5J6LLOZEDUIINC3PFFYFDM5JUV7RZ7SEAFZNSHOWKXPPYNNXD7CTUU4CVVKVTD7LR2FSDPVWJ2H7I2OGWR5ISUU4MGU4LEQXPXD6IVJJJ5QZE44LQ2DGKHRCJ62ZOIL2GTKZA' == alexa_user_id:
-        alexa_user_id = 'local'
+    
     dynamodb = boto3.resource('dynamodb')
     table = dynamodb.Table(TABLE_NAME)
     dbLookupResult = table.get_item(
@@ -380,8 +379,7 @@ def remove_player(intent, session, intent_request):
     # Map player to their unique id and platform id
     dynamodb = boto3.resource('dynamodb')
     alexa_user_id = session['user']['userId']
-    if u'amzn1.ask.account.AHUSQ3E3GEJHUG2IQJBC6ZQR6GRS2237B56K4QKCV46A4V2ZEKS7IQ47KE24MXBFPS666BFVJP5J6LLOZEDUIINC3PFFYFDM5JUV7RZ7SEAFZNSHOWKXPPYNNXD7CTUU4CVVKVTD7LR2FSDPVWJ2H7I2OGWR5ISUU4MGU4LEQXPXD6IVJJJ5QZE44LQ2DGKHRCJ62ZOIL2GTKZA' == alexa_user_id:
-        alexa_user_id = 'local'
+    
     table = dynamodb.Table(TABLE_NAME)
 
     # Update player's database item to remove the necessary player
@@ -461,8 +459,7 @@ def add_player(intent, session, intent_request):
     # Check if name already exists
     dynamodb = boto3.resource('dynamodb')
     alexa_user_id = session['user']['userId']
-    if u'amzn1.ask.account.AHUSQ3E3GEJHUG2IQJBC6ZQR6GRS2237B56K4QKCV46A4V2ZEKS7IQ47KE24MXBFPS666BFVJP5J6LLOZEDUIINC3PFFYFDM5JUV7RZ7SEAFZNSHOWKXPPYNNXD7CTUU4CVVKVTD7LR2FSDPVWJ2H7I2OGWR5ISUU4MGU4LEQXPXD6IVJJJ5QZE44LQ2DGKHRCJ62ZOIL2GTKZA' == alexa_user_id:
-        alexa_user_id = 'local'
+    
     table = dynamodb.Table(TABLE_NAME)
     dbLookupResult = table.get_item(
             Key={'AlexaUserID' : alexa_user_id}
@@ -544,8 +541,7 @@ def stat_lookup(intent, session, intent_request):
     player_id = intent['slots']['name']['value'].lower()
     stat_slot = intent['slots']['statType']['value'].lower()
     alexa_user_id = session['user']['userId']
-    if u'amzn1.ask.account.AHUSQ3E3GEJHUG2IQJBC6ZQR6GRS2237B56K4QKCV46A4V2ZEKS7IQ47KE24MXBFPS666BFVJP5J6LLOZEDUIINC3PFFYFDM5JUV7RZ7SEAFZNSHOWKXPPYNNXD7CTUU4CVVKVTD7LR2FSDPVWJ2H7I2OGWR5ISUU4MGU4LEQXPXD6IVJJJ5QZE44LQ2DGKHRCJ62ZOIL2GTKZA' == alexa_user_id:
-        alexa_user_id = 'local'
+    
 
     # Lookup will be JSON if everything went smoothly. Containing all info about player
     lookup_response = database_api_lookup(player_id, alexa_user_id)
@@ -610,8 +606,7 @@ def points_remaining(intent, session, intent_request):
     else:
         playlist_id = "13"
     alexa_user_id = session['user']['userId']
-    if u'amzn1.ask.account.AHUSQ3E3GEJHUG2IQJBC6ZQR6GRS2237B56K4QKCV46A4V2ZEKS7IQ47KE24MXBFPS666BFVJP5J6LLOZEDUIINC3PFFYFDM5JUV7RZ7SEAFZNSHOWKXPPYNNXD7CTUU4CVVKVTD7LR2FSDPVWJ2H7I2OGWR5ISUU4MGU4LEQXPXD6IVJJJ5QZE44LQ2DGKHRCJ62ZOIL2GTKZA' == alexa_user_id:
-        alexa_user_id = 'local'
+    
 
 
     # Find the current season
