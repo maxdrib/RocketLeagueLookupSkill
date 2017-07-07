@@ -334,8 +334,6 @@ def lookup_player(intent, session, intent_request):
         unique_id = ""
         platform_id = ""
         alexa_user_id = session['user']['userId']
-        if u'amzn1.ask.account.AHUSQ3E3GEJHUG2IQJBC6ZQR6GRS2237B56K4QKCV46A4V2ZEKS7IQ47KE24MXBFPS666BFVJP5J6LLOZEDUIINC3PFFYFDM5JUV7RZ7SEAFZNSHOWKXPPYNNXD7CTUU4CVVKVTD7LR2FSDPVWJ2H7I2OGWR5ISUU4MGU4LEQXPXD6IVJJJ5QZE44LQ2DGKHRCJ62ZOIL2GTKZA' == alexa_user_id:
-            alexa_user_id = 'local'
 
         
         api_lookup_result = database_api_lookup(player_id, alexa_user_id)
