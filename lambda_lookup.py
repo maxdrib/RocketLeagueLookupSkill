@@ -151,7 +151,7 @@ def build_response(session_attributes, speechlet_response):
 
 # --------------- Functions that control the skill's behavior ------------------
 
-def get_welcome_response(session):
+def get_welcome_response(intent, session):
     """ If we wanted to initialize the session to have some attributes we could
     add those here
     """
@@ -165,6 +165,8 @@ def get_welcome_response(session):
     reprompt_text = "I'm sorry, I didn't catch that. Please add, lookup, or remove a player." 
 
     alexa_user_id = session['user']['userId']
+    if u'amzn1.ask.account.AHUSQ3E3GEJHUG2IQJBC6ZQR6GRS2237B56K4QKCV46A4V2ZEKS7IQ47KE24MXBFPS666BFVJP5J6LLOZEDUIINC3PFFYFDM5JUV7RZ7SEAFZNSHOWKXPPYNNXD7CTUU4CVVKVTD7LR2FSDPVWJ2H7I2OGWR5ISUU4MGU4LEQXPXD6IVJJJ5QZE44LQ2DGKHRCJ62ZOIL2GTKZA' == alexa_user_id:
+        alexa_user_id = 'local'
     dynamodb = boto3.resource('dynamodb')
     table = dynamodb.Table(TABLE_NAME)
     dbLookupResult = table.get_item(
@@ -175,10 +177,15 @@ def get_welcome_response(session):
     if 'Item' not in [item for item in dbLookupResult]:
         speech_output = "Welcome to the Rocket League lookup app. There are " \
             "not currently any players. Please add a player with the phrase, 'add player'," \
-            " followed by your first name"
+            " followed by your first name."
         reprompt_text = "Sorry, I didn't catch that. Please add a new player."
 
     should_end_session = False
+    intent_name = ''
+    if 'name' in intent:
+        intent_name = intent['name']
+    if intent_name == "AMAZON.HelpIntent":
+        speech_output += " You can also look up more specific stats by asking, 'what is my accuracy', or, 'how many games do i need to win to rank up'"
     return build_response(session_attributes, build_speechlet_response(
         card_title, speech_output, reprompt_text, should_end_session))
 
@@ -194,20 +201,22 @@ def handle_session_end_request():
 def player_not_found(player_id, session_attributes, card_title, should_end_session):
     """ Helper function to generate an Alexa response when the player was not found """
     return build_response(session_attributes, build_speechlet_response(
-                    card_title, "Player "+player_id+" not found in skill lookup. Please add the player to my database with the phrase 'Alexa, add player'", "Please try with another player", should_end_session))
+                    card_title, "Player "+player_id+" not found in skill lookup. Please add the player to my database with the phrase 'add player'", 
+                    "Please try with another player", should_end_session))
 
 def create_player_id_attributes(player_id):
     return {"playerID": player_id}
 
 def parse_api_call(player_id, json_result):
     """ Helper function to parse the resulting API call for a basic player lookup """
-    print("Results for player " + player_id + " are:"+'\n'+json_result)
+    print("Results for player " + player_id + " are:")
+    print(json_result)
     # Check to see if player exists in database
     if 'code' in [keys for keys in json_result]:
         if json_result['code'] == 404:
-            return "Player does not exist in Rocket League API database"
+            return "Player does not exist in Rocket League API database. Please try removing the player and adding them again."
         elif json_result['code'] == 401:
-            return "API key is invalid. Unauthorized request."
+            return "API key is invalid. Unauthorized request. Please try again later."
         elif json_result['code'] == 400:
             return "Invalid request. Please try removing the player and adding them again."
         elif json_result['code'] >= 500:
@@ -222,36 +231,44 @@ def parse_api_call(player_id, json_result):
     if numPlaylists < 1:
         speech_output = "no ranked match statistics available"
     elif numPlaylists == 1:
-        if json_season['10'] != None:
-            speech_output += str(json_season['10']['rankPoints']) + " points in duel"
-        if json_season['11'] != None:
-            speech_output += str(json_season['11']['rankPoints']) + " points in doubles"
-        if json_season['12'] != None:
-            speech_output += str(json_season['12']['rankPoints']) + " points in solo standard"
-        if json_season['13'] != None:
-            speech_output += str(json_season['13']['rankPoints']) + " points in standard"
-    else:
-        if json_season['10'] != None:
-            if numPlaylists >= 3:
-                speech_output += str(json_season['10']['rankPoints']) + " points in duel, "
-            else:
+        if '10' in json_season:
+            if json_season['10'] != None:
                 speech_output += str(json_season['10']['rankPoints']) + " points in duel"
-            numPlaylists -= 1
-        if json_season['11'] != None:
-            if numPlaylists >= 2:
-                speech_output += str(json_season['11']['rankPoints']) + " points in doubles, "
-            else:
-                speech_output += " and " + str(json_season['11']['rankPoints']) + " points in doubles"
-            numPlaylists -= 1
-        if json_season['12'] != None:
-            if numPlaylists >= 2:
-                speech_output += str(json_season['12']['rankPoints']) + " points in solo standard, "
-            else:
-                speech_output += " and " + str(json_season['11']['rankPoints']) + " points in solo standard"
-            numPlaylists -= 1
-        if json_season['13'] != None:
-            speech_output += " and " + str(json_season['13']['rankPoints']) + " points in standard"
-    speech_output += " so far in season " + mostRecentSeason
+        if '11' in json_season:
+            if json_season['11'] != None:
+                speech_output += str(json_season['11']['rankPoints']) + " points in doubles"
+        if '12' in json_season:
+            if json_season['12'] != None:
+                speech_output += str(json_season['12']['rankPoints']) + " points in solo standard"
+        if '13' in json_season:
+            if json_season['13'] != None:
+                speech_output += str(json_season['13']['rankPoints']) + " points in standard"
+    else:
+        if '10' in json_season:
+            if json_season['10'] != None:
+                if numPlaylists >= 3:
+                    speech_output += str(json_season['10']['rankPoints']) + " points in duel, "
+                else:
+                    speech_output += str(json_season['10']['rankPoints']) + " points in duel"
+                numPlaylists -= 1
+        if '11' in json_season:
+            if json_season['11'] != None:
+                if numPlaylists >= 2:
+                    speech_output += str(json_season['11']['rankPoints']) + " points in doubles, "
+                else:
+                    speech_output += " and " + str(json_season['11']['rankPoints']) + " points in doubles"
+                numPlaylists -= 1
+        if '12' in json_season:
+            if json_season['12'] != None:
+                if numPlaylists >= 2:
+                    speech_output += str(json_season['12']['rankPoints']) + " points in solo standard, "
+                else:
+                    speech_output += " and " + str(json_season['11']['rankPoints']) + " points in solo standard"
+                numPlaylists -= 1
+        if '13' in json_season:
+            if json_season['13'] != None:
+                speech_output += " and " + str(json_season['13']['rankPoints']) + " points in standard"
+    speech_output += " so far in season " + mostRecentSeason + ". What else would you like to do?"
 
     return speech_output
 
@@ -265,13 +282,13 @@ def database_api_lookup(player_id, alexa_user_id):
 
     # Check to see if Alexa user has been created in DB
     if 'Item' not in [item for item in dbLookupResult]:
-        return "Player "+player_id+" not found in skill lookup. Please add the player to my database with the phrase 'Alexa, add player'"
+        return "Player "+player_id+" not found in skill lookup. Please add the player to my database with the phrase 'add player'"
 
     AccountNames = dbLookupResult['Item']['AccountNames']
 
     # Check to see if local user exists
     if player_id not in [name for name in AccountNames]:
-        return "Player "+player_id+" not found in skill lookup. Please add the player to my database with the phrase 'Alexa, add player'"
+        return "Player "+player_id+" not found in skill lookup. Please add the player to my database with the phrase 'add player'"
 
 
     player_id_and_platform = dbLookupResult['Item']['AccountNames'][player_id].split('&')
@@ -279,6 +296,7 @@ def database_api_lookup(player_id, alexa_user_id):
     platform_id = player_id_and_platform[1]
 
     print('Player ID: ' + player_id)
+    print('Unique ID: ' + unique_id)
     print('Platform ID: ' + platform_id)
 
     # Do an RL API lookup to see whose name it is
@@ -292,7 +310,7 @@ def database_api_lookup(player_id, alexa_user_id):
     print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     print(apiLookupResult)
     if apiLookupResult == '':
-        speech_output = 'Nothing returned from Rocket League API for player <say-as interpret-as="spell-out">'+unique_id+'</say-as>. Please try again later.'
+        speech_output = 'Nothing returned from Rocket League API for player '+unique_id+'. Please try again later, or look up another player.'
         return speech_output
 
     json_result = json.loads(apiLookupResult)
@@ -315,24 +333,26 @@ def lookup_player(intent, session, intent_request):
         unique_id = ""
         platform_id = ""
         alexa_user_id = session['user']['userId']
+        if u'amzn1.ask.account.AHUSQ3E3GEJHUG2IQJBC6ZQR6GRS2237B56K4QKCV46A4V2ZEKS7IQ47KE24MXBFPS666BFVJP5J6LLOZEDUIINC3PFFYFDM5JUV7RZ7SEAFZNSHOWKXPPYNNXD7CTUU4CVVKVTD7LR2FSDPVWJ2H7I2OGWR5ISUU4MGU4LEQXPXD6IVJJJ5QZE44LQ2DGKHRCJ62ZOIL2GTKZA' == alexa_user_id:
+            alexa_user_id = 'local'
 
         
         api_lookup_result = database_api_lookup(player_id, alexa_user_id)
 
         # if function returns a string, that means there was an error, so build response. Otherwise proceed as before
         if type(api_lookup_result) == type("hi") or type(api_lookup_result)==type(u'hi'):
-            should_end_session = True
             return build_response(session_attributes, build_speechlet_response(
                 card_title, api_lookup_result, "", should_end_session))
 
         # otherwise, parse it and generate a speech output
         speech_output = parse_api_call(player_id, api_lookup_result)
-        should_end_session = True
+        should_end_session = False
         
     else:
         speech_output = "I'm not sure what your user name is. " \
                         "Please contact your administrator."
         should_end_session = True
+
     return build_response(session_attributes, build_speechlet_response(
         card_title, speech_output, "", should_end_session))
 
@@ -342,7 +362,7 @@ def successfully_removed_player(player_id, session_attributes, card_title, shoul
     speech_output = "Successfully removed player " + player_id + ". What else would you like to do?"
     reprompt_text = "I'm sorry, I didn't catch that. Please try again."
     return build_response(session_attributes, build_speechlet_response(
-        card_title, speech_output, reprompt_text, should_end_session))
+        card_title, speech_output, reprompt_text, False))
 
 def remove_player(intent, session, intent_request):
     """ Removes a player from the database"""
@@ -360,6 +380,8 @@ def remove_player(intent, session, intent_request):
     # Map player to their unique id and platform id
     dynamodb = boto3.resource('dynamodb')
     alexa_user_id = session['user']['userId']
+    if u'amzn1.ask.account.AHUSQ3E3GEJHUG2IQJBC6ZQR6GRS2237B56K4QKCV46A4V2ZEKS7IQ47KE24MXBFPS666BFVJP5J6LLOZEDUIINC3PFFYFDM5JUV7RZ7SEAFZNSHOWKXPPYNNXD7CTUU4CVVKVTD7LR2FSDPVWJ2H7I2OGWR5ISUU4MGU4LEQXPXD6IVJJJ5QZE44LQ2DGKHRCJ62ZOIL2GTKZA' == alexa_user_id:
+        alexa_user_id = 'local'
     table = dynamodb.Table(TABLE_NAME)
 
     # Update player's database item to remove the necessary player
@@ -371,8 +393,8 @@ def remove_player(intent, session, intent_request):
             )
         return successfully_removed_player(player_id, session_attributes, card_title, should_end_session)
     except ClientError as e:
-        speech_output = e.response['Error']['Message'] + '. Operation failed.'
-        reprompt_text = 'Please try again'
+        speech_output = e.response['Error']['Message'] + '. Operation failed. Please try again.'
+        reprompt_text = 'Please try again.'
         return build_response(session_attributes, build_speechlet_response(
                 card_title, speech_output, reprompt_text, should_end_session))
 
@@ -403,7 +425,8 @@ def add_player(intent, session, intent_request):
     #   user must have detected an error
     elif intent['confirmationStatus'] != "CONFIRMED":
         return build_response(session_attributes, build_speechlet_response(
-            card_title, "I'm sorry, your request could not be confirmed. Please try again", "Please try again by saying, 'add player'.", should_end_session))
+            card_title, "I'm sorry, your request could not be confirmed. Please try again", 
+            "Sorry, I didn't catch that. Please try again by saying, 'add player'.", should_end_session))
 
     # Since all slots are valid, we can save variables
     player_id = slots['name']['value'].lower()
@@ -438,6 +461,8 @@ def add_player(intent, session, intent_request):
     # Check if name already exists
     dynamodb = boto3.resource('dynamodb')
     alexa_user_id = session['user']['userId']
+    if u'amzn1.ask.account.AHUSQ3E3GEJHUG2IQJBC6ZQR6GRS2237B56K4QKCV46A4V2ZEKS7IQ47KE24MXBFPS666BFVJP5J6LLOZEDUIINC3PFFYFDM5JUV7RZ7SEAFZNSHOWKXPPYNNXD7CTUU4CVVKVTD7LR2FSDPVWJ2H7I2OGWR5ISUU4MGU4LEQXPXD6IVJJJ5QZE44LQ2DGKHRCJ62ZOIL2GTKZA' == alexa_user_id:
+        alexa_user_id = 'local'
     table = dynamodb.Table(TABLE_NAME)
     dbLookupResult = table.get_item(
             Key={'AlexaUserID' : alexa_user_id}
@@ -474,7 +499,7 @@ def add_player(intent, session, intent_request):
                 )
                 return successfully_added_player(player_id, session_attributes, card_title, should_end_session)
             except ClientError as e:
-                speech_output = e.response['Error']['Message'] + '. Operation failed.'
+                speech_output = e.response['Error']['Message'] + '. Operation failed. Please try again.'
                 reprompt_text = "Please try again"
                 return build_response(session_attributes, build_speechlet_response(
                     card_title, speech_output, reprompt_text, should_end_session))
@@ -489,7 +514,7 @@ def add_player(intent, session, intent_request):
             }
             table.put_item(Item=item)
         except ClientError as e:
-            speech_output = e.response['Error']['Message'] + '. Operation failed.'
+            speech_output = e.response['Error']['Message'] + '. Operation failed. Please try again.'
             reprompt_text = "Please try again"
             return build_response(session_attributes, build_speechlet_response(
                 card_title, speech_output, reprompt_text, should_end_session))
@@ -519,17 +544,17 @@ def stat_lookup(intent, session, intent_request):
     player_id = intent['slots']['name']['value'].lower()
     stat_slot = intent['slots']['statType']['value'].lower()
     alexa_user_id = session['user']['userId']
+    if u'amzn1.ask.account.AHUSQ3E3GEJHUG2IQJBC6ZQR6GRS2237B56K4QKCV46A4V2ZEKS7IQ47KE24MXBFPS666BFVJP5J6LLOZEDUIINC3PFFYFDM5JUV7RZ7SEAFZNSHOWKXPPYNNXD7CTUU4CVVKVTD7LR2FSDPVWJ2H7I2OGWR5ISUU4MGU4LEQXPXD6IVJJJ5QZE44LQ2DGKHRCJ62ZOIL2GTKZA' == alexa_user_id:
+        alexa_user_id = 'local'
 
     # Lookup will be JSON if everything went smoothly. Containing all info about player
     lookup_response = database_api_lookup(player_id, alexa_user_id)
     print("Lookup response is: ")
     print(lookup_response)
-    print(type(lookup_response))
-    print(type("hi"))
 
 
     # if response is unicode, there was an error
-    if type(lookup_response) == type(u'hi'):
+    if type(lookup_response) == type(u'hi') or type(lookup_response) == type('hi'):
         return build_response(session_attributes, build_speechlet_response(
             card_title, lookup_response, "Please try with another player", should_end_session))
 
@@ -585,14 +610,31 @@ def points_remaining(intent, session, intent_request):
     else:
         playlist_id = "13"
     alexa_user_id = session['user']['userId']
+    if u'amzn1.ask.account.AHUSQ3E3GEJHUG2IQJBC6ZQR6GRS2237B56K4QKCV46A4V2ZEKS7IQ47KE24MXBFPS666BFVJP5J6LLOZEDUIINC3PFFYFDM5JUV7RZ7SEAFZNSHOWKXPPYNNXD7CTUU4CVVKVTD7LR2FSDPVWJ2H7I2OGWR5ISUU4MGU4LEQXPXD6IVJJJ5QZE44LQ2DGKHRCJ62ZOIL2GTKZA' == alexa_user_id:
+        alexa_user_id = 'local'
 
 
     # Find the current season
     lookup_response = database_api_lookup(player_id, alexa_user_id)
     # Check for errors. Errors will be unicode type
-    if type(lookup_response) == type(u'hi'):
+    if type(lookup_response) == type(u'hi') or type(lookup_response) == type('hi'):
         return build_response(session_attributes, build_speechlet_response(
             card_title, lookup_response, "Please try with another player", should_end_session))
+
+    if 'code' in [keys for keys in lookup_response]:
+        if lookup_response['code'] == 404:
+            speech_output = "Player does not exist in Rocket League API database. Please try removing the player and adding them again."
+        elif lookup_response['code'] == 401:
+            speech_output = "API key is invalid. Unauthorized request. Please try again later."
+        elif lookup_response['code'] == 400:
+            speech_output = "Invalid request. Please try removing the player and adding them again."
+        elif lookup_response['code'] >= 500:
+            speech_output = "Rocket League API is not currently accessible. Please try again later."
+        else:
+            speech_output = "An error has occured. Please try again later."
+        return build_response(session_attributes, build_speechlet_response(
+            card_title, speech_output, "Sorry, I didn't catch that. Please try again later, or try with a different player.", 
+            should_end_session))
 
     # Find the most recent season
     mostRecentSeason = [season for season in lookup_response['rankedSeasons']][0]
@@ -602,14 +644,16 @@ def points_remaining(intent, session, intent_request):
     curr_tier = 0
 
     # If season data for given playlist exists, save values
-    if json_season[playlist_id] != None:
-        curr_points = int(json_season[playlist_id]['rankPoints']) 
-        curr_tier =  int(json_season[playlist_id]['tier']) 
-        print("Curr points for player " + player_id + " in playlist " + playlist_name + " is: " + str(curr_points))
+    if playlist_id in json_season:
+        if json_season[playlist_id] != None:
+            curr_points = int(json_season[playlist_id]['rankPoints']) 
+            curr_tier =  int(json_season[playlist_id]['tier']) 
+            print("Curr points for player " + player_id + " in playlist " + playlist_name + " is: " + str(curr_points))
     else:
-        speech_output += "no data available for " + playlist_name
+        speech_output += "no data available for " + playlist_name + '. Please try again later, or try with a different player.'
         return build_response(session_attributes, build_speechlet_response(
-            card_title, speech_output, "", should_end_session))
+            card_title, speech_output, "Sorry, I didn't catch that. Please try again later, or try with a different player.", 
+            should_end_session))
 
     # Look up skill distribution to find how points map to tiers/divisions
     url = "https://rocketleague.tracker.network/distribution"
@@ -647,11 +691,18 @@ def points_remaining(intent, session, intent_request):
     
     # Formulate responses based on input. Assuming +9 points per win
     if curr_tier == 0:
-        speech_output = player_id + " has reached maximum tier. Congratulations"
+        speech_output = player_id + " has reached maximum tier. Congratulations" + '. What else would you like to do?'
     elif unit == 'games':
-        speech_output = player_id + " is " + str(diff_points/14+1) + " games away from reaching " + next_tier_label + " in " + playlist_name
+        numGames = diff_points/14+1
+        if numGames == 1:
+            speech_output = player_id + " is " + str(numGames) + " game away from reaching " + next_tier_label + " in " + playlist_name + '. What else would you like to do?'
+        else:
+            speech_output = player_id + " is " + str(numGames) + " games away from reaching " + next_tier_label + " in " + playlist_name + '. What else would you like to do?'
     else:
-        speech_output = player_id + " is " + str(diff_points) + " points away from reaching " + next_tier_label + " in " + playlist_name
+        if diff_points == 1:
+            speech_output = player_id + " is " + str(diff_points) + " point away from reaching " + next_tier_label + " in " + playlist_name + '. What else would you like to do?'
+        else:
+            speech_output = player_id + " is " + str(diff_points) + " points away from reaching " + next_tier_label + " in " + playlist_name + '. What else would you like to do?'
 
     print(speech_output)
     return build_response(session_attributes, build_speechlet_response(
@@ -675,7 +726,7 @@ def on_launch(launch_request, session):
     print("on_launch requestId=" + launch_request['requestId'] +
           ", sessionId=" + session['sessionId'])
     # Dispatch to your skill's launch
-    return get_welcome_response(session)
+    return get_welcome_response("", session)
 
 
 def on_intent(intent_request, session):
@@ -696,12 +747,12 @@ def on_intent(intent_request, session):
         return add_player(intent, session, intent_request)
     elif intent_name == "RemovePlayerIntent":
         return remove_player(intent, session, intent_request)
-    elif intent_name == "AAStatLookupIntent":
+    elif intent_name == "StatLookupIntent":
         return stat_lookup(intent, session, intent_request)
     elif intent_name == "PointsRemainingIntent":
         return points_remaining(intent, session, intent_request)
     elif intent_name == "AMAZON.HelpIntent":
-        return get_welcome_response()
+        return get_welcome_response(intent, session)
     elif intent_name == "AMAZON.CancelIntent" or intent_name == "AMAZON.StopIntent":
         return handle_session_end_request()
     else:

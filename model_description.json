@@ -1,0 +1,1519 @@
+{
+  "intents": [
+    {
+      "name": "AddPlayerIntent",
+      "samples": [
+        "add player {name}",
+        "add rocket league player {name}",
+        "add player {name} to rocket league",
+        "add player named {name}",
+        "add rocket league player named {name}",
+        "add rocket league player named {name} on {console} with username {charOne} {charTwo}",
+        "add {console} user",
+        "add player"
+      ],
+      "slots": [
+        {
+          "name": "name",
+          "type": "AMAZON.US_FIRST_NAME",
+          "samples": [
+            "{name}",
+            "The name is {name}",
+            "My name is {name}",
+            "The user's name is {name}",
+            "The player's name is {name}",
+            "player's name is {name}"
+          ]
+        },
+        {
+          "name": "console",
+          "type": "CONSOLELIST",
+          "samples": [
+            "{console}",
+            "I play on {console}",
+            "{name} plays on {console}"
+          ]
+        },
+        {
+          "name": "charOne",
+          "type": "SPELLINGLIST",
+          "samples": [
+            "screen name is {charOne} {charTwo}",
+            "screen name is {charOne} {charTwo} {charThree}",
+            "screen name is {charOne} {charTwo} {charThree} {charFour}",
+            "screen name is {charOne} {charTwo} {charThree} {charFour} {charFive}",
+            "screen name is {charOne} {charTwo} {charThree} {charFour} {charFive} {charSix}",
+            "screen name is {charOne} {charTwo} {charThree} {charFour} {charFive} {charSix} {charSeven} ",
+            "screen name is {charOne} {charTwo} {charThree} {charFour} {charFive} {charSix} {charSeven} {charEight}",
+            "screen name is {charOne} {charTwo} {charThree} {charFour} {charFive} {charSix} {charSeven} {charEight} {charNine}",
+            "screen name is {charOne} {charTwo} {charThree} {charFour} {charFive} {charSix} {charSeven} {charEight} {charNine} {charTen}",
+            "screen name is {charOne} {charTwo} {charThree} {charFour} {charFive} {charSix} {charSeven} {charEight} {charNine} {charTen} {charEleven}",
+            "screen name is {charOne} {charTwo} {charThree} {charFour} {charFive} {charSix} {charSeven} {charEight} {charNine} {charTen} {charEleven} {charTwelve}",
+            "screen name is {charOne} {charTwo} {charThree} {charFour} {charFive} {charSix} {charSeven} {charEight} {charNine} {charTen} {charEleven} {charTwelve} {charThirteen}",
+            "screen name is {charOne} {charTwo} {charThree} {charFour} {charFive} {charSix} {charSeven} {charEight} {charNine} {charTen} {charEleven} {charTwelve} {charThirteen} {charFourteen}",
+            "screen name is {charOne} {charTwo} {charThree} {charFour} {charFive} {charSix} {charSeven} {charEight} {charNine} {charTen} {charEleven} {charTwelve} {charThirteen} {charFourteen} {charFifteen}",
+            "screen name is {charOne} {charTwo} {charThree} {charFour} {charFive} {charSix} {charSeven} {charEight} {charNine} {charTen} {charEleven} {charTwelve} {charThirteen} {charFourteen} {charFifteen} {charSixteen}",
+            "screen name is {charOne} {charTwo} {charThree} {charFour} {charFive} {charSix} {charSeven} {charEight} {charNine} {charTen} {charEleven} {charTwelve} {charThirteen} {charFourteen} {charFifteen} {charSixteen} {charSeventeen}",
+            "screen name is {charOne} {charTwo} {charThree} {charFour} {charFive} {charSix} {charSeven} {charEight} {charNine} {charTen} {charEleven} {charTwelve} {charThirteen} {charFourteen} {charFifteen} {charSixteen} {charSeventeen} {charEighteen}",
+            "screen name is {charOne} {charTwo} {charThree} {charFour} {charFive} {charSix} {charSeven} {charEight} {charNine} {charTen} {charEleven} {charTwelve} {charThirteen} {charFourteen} {charFifteen} {charSixteen} {charSeventeen} {charEighteen} {charNineteen} ",
+            "screen name is {charOne} {charTwo} {charThree} {charFour} {charFive} {charSix} {charSeven} {charEight} {charNine} {charTen} {charEleven} {charTwelve} {charThirteen} {charFourteen} {charFifteen} {charSixteen} {charSeventeen} {charEighteen} {charNineteen} {charTwenty} "
+          ]
+        },
+        {
+          "name": "charTwo",
+          "type": "SPELLINGLIST",
+          "samples": [
+            "screen name is {charOne} {charTwo}",
+            "screen name is {charOne} {charTwo} {charThree}",
+            "screen name is {charOne} {charTwo} {charThree} {charFour}",
+            "screen name is {charOne} {charTwo} {charThree} {charFour} {charFive}",
+            "screen name is {charOne} {charTwo} {charThree} {charFour} {charFive} {charSix}",
+            "screen name is {charOne} {charTwo} {charThree} {charFour} {charFive} {charSix} {charSeven} ",
+            "screen name is {charOne} {charTwo} {charThree} {charFour} {charFive} {charSix} {charSeven} {charEight}",
+            "screen name is {charOne} {charTwo} {charThree} {charFour} {charFive} {charSix} {charSeven} {charEight} {charNine}",
+            "screen name is {charOne} {charTwo} {charThree} {charFour} {charFive} {charSix} {charSeven} {charEight} {charNine} {charTen}",
+            "screen name is {charOne} {charTwo} {charThree} {charFour} {charFive} {charSix} {charSeven} {charEight} {charNine} {charTen} {charEleven}",
+            "screen name is {charOne} {charTwo} {charThree} {charFour} {charFive} {charSix} {charSeven} {charEight} {charNine} {charTen} {charEleven} {charTwelve}",
+            "screen name is {charOne} {charTwo} {charThree} {charFour} {charFive} {charSix} {charSeven} {charEight} {charNine} {charTen} {charEleven} {charTwelve} {charThirteen}",
+            "screen name is {charOne} {charTwo} {charThree} {charFour} {charFive} {charSix} {charSeven} {charEight} {charNine} {charTen} {charEleven} {charTwelve} {charThirteen} {charFourteen}",
+            "screen name is {charOne} {charTwo} {charThree} {charFour} {charFive} {charSix} {charSeven} {charEight} {charNine} {charTen} {charEleven} {charTwelve} {charThirteen} {charFourteen} {charFifteen}",
+            "screen name is {charOne} {charTwo} {charThree} {charFour} {charFive} {charSix} {charSeven} {charEight} {charNine} {charTen} {charEleven} {charTwelve} {charThirteen} {charFourteen} {charFifteen} {charSixteen}",
+            "screen name is {charOne} {charTwo} {charThree} {charFour} {charFive} {charSix} {charSeven} {charEight} {charNine} {charTen} {charEleven} {charTwelve} {charThirteen} {charFourteen} {charFifteen} {charSixteen} {charSeventeen}",
+            "screen name is {charOne} {charTwo} {charThree} {charFour} {charFive} {charSix} {charSeven} {charEight} {charNine} {charTen} {charEleven} {charTwelve} {charThirteen} {charFourteen} {charFifteen} {charSixteen} {charSeventeen} {charEighteen}",
+            "screen name is {charOne} {charTwo} {charThree} {charFour} {charFive} {charSix} {charSeven} {charEight} {charNine} {charTen} {charEleven} {charTwelve} {charThirteen} {charFourteen} {charFifteen} {charSixteen} {charSeventeen} {charEighteen} {charNineteen} ",
+            "screen name is {charOne} {charTwo} {charThree} {charFour} {charFive} {charSix} {charSeven} {charEight} {charNine} {charTen} {charEleven} {charTwelve} {charThirteen} {charFourteen} {charFifteen} {charSixteen} {charSeventeen} {charEighteen} {charNineteen} {charTwenty} ",
+            "{charTwo}"
+          ]
+        },
+        {
+          "name": "charThree",
+          "type": "SPELLINGLIST",
+          "samples": []
+        },
+        {
+          "name": "charFour",
+          "type": "SPELLINGLIST",
+          "samples": []
+        },
+        {
+          "name": "charFive",
+          "type": "SPELLINGLIST",
+          "samples": []
+        },
+        {
+          "name": "charSix",
+          "type": "SPELLINGLIST",
+          "samples": []
+        },
+        {
+          "name": "charSeven",
+          "type": "SPELLINGLIST",
+          "samples": []
+        },
+        {
+          "name": "charEight",
+          "type": "SPELLINGLIST",
+          "samples": []
+        },
+        {
+          "name": "charNine",
+          "type": "SPELLINGLIST",
+          "samples": []
+        },
+        {
+          "name": "charTen",
+          "type": "SPELLINGLIST",
+          "samples": []
+        },
+        {
+          "name": "charEleven",
+          "type": "SPELLINGLIST",
+          "samples": []
+        },
+        {
+          "name": "charTwelve",
+          "type": "SPELLINGLIST",
+          "samples": []
+        },
+        {
+          "name": "charThirteen",
+          "type": "SPELLINGLIST",
+          "samples": []
+        },
+        {
+          "name": "charFourteen",
+          "type": "SPELLINGLIST",
+          "samples": []
+        },
+        {
+          "name": "charFifteen",
+          "type": "SPELLINGLIST",
+          "samples": []
+        },
+        {
+          "name": "charSixteen",
+          "type": "SPELLINGLIST",
+          "samples": []
+        },
+        {
+          "name": "charSeventeen",
+          "type": "SPELLINGLIST",
+          "samples": []
+        },
+        {
+          "name": "charEighteen",
+          "type": "SPELLINGLIST",
+          "samples": []
+        },
+        {
+          "name": "charNineteen",
+          "type": "SPELLINGLIST",
+          "samples": []
+        },
+        {
+          "name": "charTwenty",
+          "type": "SPELLINGLIST",
+          "samples": []
+        }
+      ]
+    },
+    {
+      "name": "AMAZON.CancelIntent",
+      "samples": []
+    },
+    {
+      "name": "AMAZON.HelpIntent",
+      "samples": [
+        "help",
+        "i need help"
+      ]
+    },
+    {
+      "name": "AMAZON.StopIntent",
+      "samples": []
+    },
+    {
+      "name": "LookupPlayerIntent",
+      "samples": [
+        "lookup player {name}",
+        "player lookup {name}",
+        "lookup rocket league player {name}",
+        "lookup player {name} in rocket league",
+        "rocket league lookup {name}",
+        "lookup {name} in rocket league",
+        "lookup a rocket league player {name}",
+        "lookup {name}",
+        "look up {name}",
+        "look up player {name}",
+        "player look up {name}",
+        "look up a rocket league player {name}",
+        "rocket league look up {name}",
+        "lookup player",
+        "look up player"
+      ],
+      "slots": [
+        {
+          "name": "name",
+          "type": "AMAZON.US_FIRST_NAME",
+          "samples": [
+            "{name}",
+            "Player name is {name}",
+            "Name is {name}"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "PointsRemainingIntent",
+      "samples": [
+        "How many {unit} do I have left until the next tier",
+        "How many {unit} until I rank up",
+        "How many {unit} until {name} ranks up",
+        "How many {unit} do I need to get until player {name} ranks up",
+        "How many more {unit} do I have to win until I rank up",
+        "How many more {unit} for player {name}",
+        "How many more {unit} for player {name} to rank up",
+        "How many {unit} remaining until next rank",
+        "How many {unit} until next rank",
+        "{unit} to next rank",
+        "{unit} to next tier",
+        "How many {unit} until next tier",
+        "How many {unit} remaining until next tier",
+        "How many more {unit} does {name} need to rank up",
+        "How many {unit} remaining",
+        "{unit} remaining",
+        "how many {unit} do I need for the next level",
+        "how many {unit} does {name} need for the next level",
+        "how many {unit} are left until {name} levels up",
+        "how many {unit} are left until I level up",
+        "how many {unit} do I need to level up",
+        "how many {unit} does {name} need to level up",
+        "how many {unit} do I have to win until I level up",
+        "how many {unit} do I have to win until {name} levels up",
+        "how many {unit} do I have to win until player {name} levels up",
+        "how many {unit} are left until next level in {playlist}",
+        "{unit} until next rank in {playlist} for {name}",
+        "{unit} remaining until next level in {playlist} for {name}",
+        "how many {unit} does {name} need to reach the next level in {playlist}",
+        "how many more {unit} until I level in up {playlist}",
+        "how many more {unit} do I have to win until I level up in {playlist}"
+      ],
+      "slots": [
+        {
+          "name": "unit",
+          "type": "UNITLIST",
+          "samples": [
+            "{unit}",
+            "Remaining {unit}"
+          ]
+        },
+        {
+          "name": "name",
+          "type": "AMAZON.US_FIRST_NAME",
+          "samples": [
+            "{name}",
+            "player {name}",
+            "user {name}",
+            "{unit} for player {name} ",
+            "{unit} for player {name} in {playlist}"
+          ]
+        },
+        {
+          "name": "playlist",
+          "type": "PLAYLIST",
+          "samples": [
+            "{playlist}",
+            "{playlist} playlist",
+            "{unit} for {playlist}"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "RemovePlayerIntent",
+      "samples": [
+        "remove player {name}",
+        "remove rocket league player {name}",
+        "remove player {name} to rocket league",
+        "remove player named {name}",
+        "add rocket league player named {name}",
+        "remove player",
+        "remove {name}"
+      ],
+      "slots": [
+        {
+          "name": "name",
+          "type": "AMAZON.US_FIRST_NAME",
+          "samples": [
+            "{name}",
+            "Player name is {name}",
+            "Name is {name}"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "StatLookupIntent",
+      "samples": [
+        "What is my {statType}",
+        "Look up {statType} for {name}",
+        "Look up {statType} for user {name}",
+        "Look up {statType} for player {name}",
+        "What is the {statType} for {name}",
+        "What is the {statType} for player {name}",
+        "What is the {statType} for user {name}",
+        "What is {name} {statType}",
+        "What is player {name} {statType}",
+        "What is user {name} {statType}",
+        "stat lookup",
+        "stat look up"
+      ],
+      "slots": [
+        {
+          "name": "statType",
+          "type": "STATLIST",
+          "samples": [
+            "Look up {statType}",
+            "Look up {statType} for {name}",
+            "{statType}",
+            "{statType} for {name}"
+          ]
+        },
+        {
+          "name": "name",
+          "type": "AMAZON.US_FIRST_NAME",
+          "samples": [
+            "{name}",
+            "The player's name is {name}",
+            "Look up player {name}",
+            "Look up {name}",
+            "it's {name}",
+            "{name} is the name of the player",
+            "Look up user {name}",
+            "{name}'s {statType}",
+            "{statType} for {name}",
+            "{statType} of {name}"
+          ]
+        }
+      ]
+    }
+  ],
+  "types": [
+    {
+      "name": "CONSOLELIST",
+      "values": [
+        {
+          "id": null,
+          "name": {
+            "value": "PS4",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "Xbox",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "Steam",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "PC",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "playstation",
+            "synonyms": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "PLAYLIST",
+      "values": [
+        {
+          "id": null,
+          "name": {
+            "value": "duel",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "singles",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "solo",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "two vs two",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "doubles",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "2 vs 2",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "two versus two",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "2 versus 2",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "triples",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "triplets",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "3 vs 3",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "three versus three",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "three vs three",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "3 versus 3",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "solo standard",
+            "synonyms": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "SPELLINGLIST",
+      "values": [
+        {
+          "id": null,
+          "name": {
+            "value": "a.",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "b.",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "c.",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "d.",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "e.",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "f.",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "g.",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "h.",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "i.",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "j.",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "k.",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "l.",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "m.",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "n.",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "o.",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "p.",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "q.",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "r.",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "s.",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "t.",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "u.",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "v.",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "w.",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "x.",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "y.",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "z.",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "one",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "two",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "three",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "four",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "five",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "six",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "seven",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "eight",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "nine",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "zero",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "space",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "underscore",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "dash",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "dot",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "period",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "open bracket",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "close bracket",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "open parenthesis",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "close parenthesis",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "back slash",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "forward slash",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "quotation mark",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "bar",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "question mark",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "exclamation point",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "at sign",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "equals sign",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "carrot",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "star",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "plus sign",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "comma",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "left brace",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "right brace",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "squiggle",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "tilde",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "dollar sign",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "percent sign",
+            "synonyms": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "STATLIST",
+      "values": [
+        {
+          "id": null,
+          "name": {
+            "value": "shot to goal ratio",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "goal to shot ratio",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "accuracy",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "mvp per win ratio",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "mvp to win ratio",
+            "synonyms": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "UNITLIST",
+      "values": [
+        {
+          "id": null,
+          "name": {
+            "value": "points",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "games",
+            "synonyms": []
+          }
+        }
+      ]
+    }
+  ],
+  "prompts": [
+    {
+      "id": "Confirm.Intent-AddPlayerIntent",
+      "promptVersion": "1.0",
+      "definitionVersion": "1.0",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "Would you like to add the screenname for {name} as {charOne}. {charTwo}. {charThree}. {charFour}. {charFive}. {charSix}. {charSeven} on {console}"
+        },
+        {
+          "type": "PlainText",
+          "value": "Would you like to add the screenname for {name} as {charOne}. {charTwo}."
+        },
+        {
+          "type": "PlainText",
+          "value": "Would you like to add the screenname for {name} as {charOne}. {charTwo}. {charThree}."
+        },
+        {
+          "type": "PlainText",
+          "value": "Would you like to add the screenname for {name} as {charOne}. {charTwo}. {charThree}. {charFour}. {charFive}. {charSix}. {charSeven}. {charEight}. {charNine}. {charTen}. {charEleven}. {charTwelve}. {charThirteen}. {charFourteen}. {charFifteen}. {charSixteen}. {charSeventeen}. {charEighteen}. {charNineteen}. {charTwenty}"
+        },
+        {
+          "type": "PlainText",
+          "value": "Would you like to add the screenname for {name} as {charOne}. {charTwo}. {charThree}. {charFour}. {charFive}. {charSix}. {charSeven}. {charEight}. {charNine}. {charTen}. {charEleven}. {charTwelve}. {charThirteen}. {charFourteen}. {charFifteen}. {charSixteen}. {charSeventeen}. {charEighteen}. {charNineteen}"
+        },
+        {
+          "type": "PlainText",
+          "value": "Would you like to add the screenname for {name} as {charOne}. {charTwo}. {charThree}. {charFour}. {charFive}. {charSix}. {charSeven}. {charEight}. {charNine}. {charTen}. {charEleven}. {charTwelve}. {charThirteen}. {charFourteen}. {charFifteen}. {charSixteen}. {charSeventeen}. {charEighteen}."
+        },
+        {
+          "type": "PlainText",
+          "value": "Would you like to add the screenname for {name} as {charOne}. {charTwo}. {charThree}. {charFour}. {charFive}. {charSix}. {charSeven}. {charEight}. {charNine}. {charTen}. {charEleven}. {charTwelve}. {charThirteen}. {charFourteen}. {charFifteen}. {charSixteen}. {charSeventeen}"
+        },
+        {
+          "type": "PlainText",
+          "value": "Would you like to add the screenname for {name} as {charOne}. {charTwo}. {charThree}. {charFour}. {charFive}. {charSix}. {charSeven}. {charEight}. {charNine}. {charTen}. {charEleven}. {charTwelve}. {charThirteen}. {charFourteen}. {charFifteen}. {charSixteen}. "
+        },
+        {
+          "type": "PlainText",
+          "value": "Would you like to add the screenname for {name} as {charOne}. {charTwo}. {charThree}. {charFour}. {charFive}. {charSix}. {charSeven}. {charEight}. {charNine}. {charTen}. {charEleven}. {charTwelve}. {charThirteen}. {charFourteen}. {charFifteen}"
+        },
+        {
+          "type": "PlainText",
+          "value": "Would you like to add the screenname for {name} as {charOne}. {charTwo}. {charThree}. {charFour}. {charFive}. {charSix}. {charSeven}. {charEight}. {charNine}. {charTen}. {charEleven}. {charTwelve}. {charThirteen}. {charFourteen}."
+        },
+        {
+          "type": "PlainText",
+          "value": "Would you like to add the screenname for {name} as {charOne}. {charTwo}. {charThree}. {charFour}. {charFive}. {charSix}. {charSeven}. {charEight}. {charNine}. {charTen}. {charEleven}. {charTwelve}. {charThirteen}"
+        },
+        {
+          "type": "PlainText",
+          "value": "Would you like to add the screenname for {name} as {charOne}. {charTwo}. {charThree}. {charFour}. {charFive}. {charSix}. {charSeven}. {charEight}. {charNine}. {charTen}. {charEleven}. {charTwelve}."
+        },
+        {
+          "type": "PlainText",
+          "value": "Would you like to add the screenname for {name} as {charOne}. {charTwo}. {charThree}. {charFour}. {charFive}. {charSix}. {charSeven}. {charEight}. {charNine}. {charTen}. {charEleven}."
+        },
+        {
+          "type": "PlainText",
+          "value": "Would you like to add the screenname for {name} as {charOne}. {charTwo}. {charThree}. {charFour}. {charFive}. {charSix}. {charSeven}. {charEight}. {charNine}. {charTen}"
+        },
+        {
+          "type": "PlainText",
+          "value": "Would you like to add the screenname for {name} as {charOne}. {charTwo}. {charThree}. {charFour}. {charFive}. {charSix}. {charSeven}. {charEight}. {charNine}."
+        },
+        {
+          "type": "PlainText",
+          "value": "Would you like to add the screenname for {name} as {charOne}. {charTwo}. {charThree}. {charFour}. {charFive}. {charSix}. {charSeven}. {charEight}."
+        },
+        {
+          "type": "PlainText",
+          "value": "Would you like to add the screenname for {name} as {charOne}. {charTwo}. {charThree}. {charFour}. {charFive}. {charSix}."
+        },
+        {
+          "type": "PlainText",
+          "value": "Would you like to add the screenname for {name} as {charOne}. {charTwo}. {charThree}. {charFour}. {charFive}. "
+        },
+        {
+          "type": "PlainText",
+          "value": "Would you like to add the screenname for {name} as {charOne}. {charTwo}. {charThree}. {charFour}."
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-AddPlayerIntent.IntentSlot-name",
+      "promptVersion": "1.0",
+      "definitionVersion": "1.0",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "What is the name of the player you'd like to add?"
+        },
+        {
+          "type": "PlainText",
+          "value": "What's the user's name?"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-AddPlayerIntent.IntentSlot-console",
+      "promptVersion": "1.0",
+      "definitionVersion": "1.0",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "What console does this user play on?"
+        },
+        {
+          "type": "PlainText",
+          "value": "What console does {name} play on?"
+        },
+        {
+          "type": "PlainText",
+          "value": "Which console should I add this user for "
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-AddPlayerIntent.IntentSlot-charOne",
+      "promptVersion": "1.0",
+      "definitionVersion": "1.0",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "Please spell the screen name for user {name}. Say Screen name is"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-AddPlayerIntent.IntentSlot-charTwo",
+      "promptVersion": "1.0",
+      "definitionVersion": "1.0",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "Please confirm the second letter of the screen name"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-LookupPlayerIntent.IntentSlot-name",
+      "promptVersion": "1.0",
+      "definitionVersion": "1.0",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "Please confirm the name of the player you want to lookup."
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-PointsRemainingIntent.IntentSlot-unit",
+      "promptVersion": "1.0",
+      "definitionVersion": "1.0",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "Would you like that in terms of remaining games or points?"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-PointsRemainingIntent.IntentSlot-name",
+      "promptVersion": "1.0",
+      "definitionVersion": "1.0",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "Which player would you like to look up the remaining {unit} for"
+        },
+        {
+          "type": "PlainText",
+          "value": "For whom would you like to know the remaining {unit} until next rank?"
+        },
+        {
+          "type": "PlainText",
+          "value": "Which user are you asking for?"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-PointsRemainingIntent.IntentSlot-playlist",
+      "promptVersion": "1.0",
+      "definitionVersion": "1.0",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "Which playlist would you like to know about"
+        },
+        {
+          "type": "PlainText",
+          "value": "For which playlist"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-RemovePlayerIntent.IntentSlot-name",
+      "promptVersion": "1.0",
+      "definitionVersion": "1.0",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "Please confirm the name of the player you want to remove"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-StatLookupIntent.IntentSlot-statType",
+      "promptVersion": "1.0",
+      "definitionVersion": "1.0",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "Which stat would you like to look up for player?"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-StatLookupIntent.IntentSlot-name",
+      "promptVersion": "1.0",
+      "definitionVersion": "1.0",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "What is the name of the player you'd like to look up?"
+        },
+        {
+          "type": "PlainText",
+          "value": "Whose stats would you like to look up"
+        }
+      ]
+    }
+  ],
+  "dialog": {
+    "version": "1.0",
+    "intents": [
+      {
+        "name": "AddPlayerIntent",
+        "confirmationRequired": true,
+        "prompts": {
+          "confirm": "Confirm.Intent-AddPlayerIntent"
+        },
+        "slots": [
+          {
+            "name": "name",
+            "type": "AMAZON.US_FIRST_NAME",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicit": "Elicit.Intent-AddPlayerIntent.IntentSlot-name"
+            }
+          },
+          {
+            "name": "console",
+            "type": "CONSOLELIST",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicit": "Elicit.Intent-AddPlayerIntent.IntentSlot-console"
+            }
+          },
+          {
+            "name": "charOne",
+            "type": "SPELLINGLIST",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicit": "Elicit.Intent-AddPlayerIntent.IntentSlot-charOne"
+            }
+          },
+          {
+            "name": "charTwo",
+            "type": "SPELLINGLIST",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicit": "Elicit.Intent-AddPlayerIntent.IntentSlot-charTwo"
+            }
+          },
+          {
+            "name": "charThree",
+            "type": "SPELLINGLIST",
+            "elicitationRequired": false,
+            "confirmationRequired": false,
+            "prompts": {}
+          },
+          {
+            "name": "charFour",
+            "type": "SPELLINGLIST",
+            "elicitationRequired": false,
+            "confirmationRequired": false,
+            "prompts": {}
+          },
+          {
+            "name": "charFive",
+            "type": "SPELLINGLIST",
+            "elicitationRequired": false,
+            "confirmationRequired": false,
+            "prompts": {}
+          },
+          {
+            "name": "charSix",
+            "type": "SPELLINGLIST",
+            "elicitationRequired": false,
+            "confirmationRequired": false,
+            "prompts": {}
+          },
+          {
+            "name": "charSeven",
+            "type": "SPELLINGLIST",
+            "elicitationRequired": false,
+            "confirmationRequired": false,
+            "prompts": {}
+          },
+          {
+            "name": "charEight",
+            "type": "SPELLINGLIST",
+            "elicitationRequired": false,
+            "confirmationRequired": false,
+            "prompts": {}
+          },
+          {
+            "name": "charNine",
+            "type": "SPELLINGLIST",
+            "elicitationRequired": false,
+            "confirmationRequired": false,
+            "prompts": {}
+          },
+          {
+            "name": "charTen",
+            "type": "SPELLINGLIST",
+            "elicitationRequired": false,
+            "confirmationRequired": false,
+            "prompts": {}
+          },
+          {
+            "name": "charEleven",
+            "type": "SPELLINGLIST",
+            "elicitationRequired": false,
+            "confirmationRequired": false,
+            "prompts": {}
+          },
+          {
+            "name": "charTwelve",
+            "type": "SPELLINGLIST",
+            "elicitationRequired": false,
+            "confirmationRequired": false,
+            "prompts": {}
+          },
+          {
+            "name": "charThirteen",
+            "type": "SPELLINGLIST",
+            "elicitationRequired": false,
+            "confirmationRequired": false,
+            "prompts": {}
+          },
+          {
+            "name": "charFourteen",
+            "type": "SPELLINGLIST",
+            "elicitationRequired": false,
+            "confirmationRequired": false,
+            "prompts": {}
+          },
+          {
+            "name": "charFifteen",
+            "type": "SPELLINGLIST",
+            "elicitationRequired": false,
+            "confirmationRequired": false,
+            "prompts": {}
+          },
+          {
+            "name": "charSixteen",
+            "type": "SPELLINGLIST",
+            "elicitationRequired": false,
+            "confirmationRequired": false,
+            "prompts": {}
+          },
+          {
+            "name": "charSeventeen",
+            "type": "SPELLINGLIST",
+            "elicitationRequired": false,
+            "confirmationRequired": false,
+            "prompts": {}
+          },
+          {
+            "name": "charEighteen",
+            "type": "SPELLINGLIST",
+            "elicitationRequired": false,
+            "confirmationRequired": false,
+            "prompts": {}
+          },
+          {
+            "name": "charNineteen",
+            "type": "SPELLINGLIST",
+            "elicitationRequired": false,
+            "confirmationRequired": false,
+            "prompts": {}
+          },
+          {
+            "name": "charTwenty",
+            "type": "SPELLINGLIST",
+            "elicitationRequired": false,
+            "confirmationRequired": false,
+            "prompts": {}
+          }
+        ]
+      },
+      {
+        "name": "LookupPlayerIntent",
+        "confirmationRequired": false,
+        "prompts": {},
+        "slots": [
+          {
+            "name": "name",
+            "type": "AMAZON.US_FIRST_NAME",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicit": "Elicit.Intent-LookupPlayerIntent.IntentSlot-name"
+            }
+          }
+        ]
+      },
+      {
+        "name": "PointsRemainingIntent",
+        "confirmationRequired": false,
+        "prompts": {},
+        "slots": [
+          {
+            "name": "unit",
+            "type": "UNITLIST",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicit": "Elicit.Intent-PointsRemainingIntent.IntentSlot-unit"
+            }
+          },
+          {
+            "name": "name",
+            "type": "AMAZON.US_FIRST_NAME",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicit": "Elicit.Intent-PointsRemainingIntent.IntentSlot-name"
+            }
+          },
+          {
+            "name": "playlist",
+            "type": "PLAYLIST",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicit": "Elicit.Intent-PointsRemainingIntent.IntentSlot-playlist"
+            }
+          }
+        ]
+      },
+      {
+        "name": "RemovePlayerIntent",
+        "confirmationRequired": false,
+        "prompts": {},
+        "slots": [
+          {
+            "name": "name",
+            "type": "AMAZON.US_FIRST_NAME",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicit": "Elicit.Intent-RemovePlayerIntent.IntentSlot-name"
+            }
+          }
+        ]
+      },
+      {
+        "name": "StatLookupIntent",
+        "confirmationRequired": false,
+        "prompts": {},
+        "slots": [
+          {
+            "name": "statType",
+            "type": "STATLIST",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicit": "Elicit.Intent-StatLookupIntent.IntentSlot-statType"
+            }
+          },
+          {
+            "name": "name",
+            "type": "AMAZON.US_FIRST_NAME",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicit": "Elicit.Intent-StatLookupIntent.IntentSlot-name"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
