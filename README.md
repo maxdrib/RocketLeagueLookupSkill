@@ -1,4 +1,7 @@
-# RocketLeagueLookupSkill
+##This skill is deprecated and no longer maintained
+
+
+~~# RocketLeagueLookupSkill
 Skill available at https://www.amazon.com/dp/B072K4DDLB/ref=sr_1_1?s=digital-skills&ie=UTF8&qid=1499405961&sr=1-1&keywords=rocket+league
 
 All else that's required to host is a separate file called API_Key.py which contains the following line:
